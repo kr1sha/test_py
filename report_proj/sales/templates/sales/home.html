@@ -31,6 +31,9 @@
         <p>data frame grouped by price: </p>
         {{ grouped_by_price_data_frame_html_code|safe }}
 
+        <p>Chart: </p>
+        <img src="data:image/png;base64, {{ chart|safe }}">
+
     {% else %}
         <h3>No data</h3>
     {% endif %}

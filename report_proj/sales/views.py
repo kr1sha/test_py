@@ -5,6 +5,7 @@ from django.views.generic import ListView, DetailView
 from .models import Sale
 from .forms import SalesSearchForm
 from .modules import get_sales_data_frame, get_positions_data_frame
+from .utils import get_chart
 
 
 def home_view(request):
@@ -14,13 +15,12 @@ def home_view(request):
     positions_data_frame_html_code = None
     sales_and_position_merged_data_frame_html_code = None
     grouped_by_price_data_frame_html_code = None
+    chart = None
 
     if request.method == 'POST':
 
         date_from = request.POST.get('date_from')
         date_to = request.POST.get('date_to')
-        chart_type = request.POST.get('chart_type')
-        print(date_from, date_to, chart_type)
 
         sales_data_frame = get_sales_data_frame(date_to=date_to, date_from=date_from)
         positions_data_frame = get_positions_data_frame(date_to=date_to, date_from=date_from)
@@ -33,12 +33,17 @@ def home_view(request):
         sales_and_position_merged_data_frame_html_code = sales_and_position_merged_data_frame.to_html()
         grouped_by_price_data_frame_html_code = grouped_by_price_data_frame.to_html()
 
+        chart_type = request.POST.get('chart_type')
+        chart_labels = grouped_by_price_data_frame['transaction_id'].values
+        chart = get_chart(chart_type, grouped_by_price_data_frame, labels=chart_labels)
+
     context = {
         'form': form,
         'sales_data_frame_html_code': sales_data_frame_html_code,
         'positions_data_frame_html_code': positions_data_frame_html_code,
         'sales_and_position_merged_data_frame_html_code': sales_and_position_merged_data_frame_html_code,
-        'grouped_by_price_data_frame_html_code': grouped_by_price_data_frame_html_code
+        'grouped_by_price_data_frame_html_code': grouped_by_price_data_frame_html_code,
+        'chart': chart
     }
     return render(request, 'sales/home.html', context=context)
 
