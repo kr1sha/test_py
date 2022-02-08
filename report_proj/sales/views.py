@@ -24,18 +24,21 @@ def home_view(request):
 
         sales_data_frame = get_sales_data_frame(date_to=date_to, date_from=date_from)
         positions_data_frame = get_positions_data_frame(date_to=date_to, date_from=date_from)
-        sales_and_position_merged_data_frame = pd.merge(sales_data_frame, positions_data_frame, on='sales_id')
-        grouped_by_price_data_frame = sales_and_position_merged_data_frame.\
-            groupby('transaction_id', as_index=False)['price'].agg('sum')
 
-        sales_data_frame_html_code = sales_data_frame.to_html()
-        positions_data_frame_html_code = positions_data_frame.to_html()
-        sales_and_position_merged_data_frame_html_code = sales_and_position_merged_data_frame.to_html()
-        grouped_by_price_data_frame_html_code = grouped_by_price_data_frame.to_html()
+        if sales_data_frame is not None:
+            sales_data_frame_html_code = sales_data_frame.to_html()
+            positions_data_frame_html_code = positions_data_frame.to_html()
 
-        chart_type = request.POST.get('chart_type')
-        chart_labels = grouped_by_price_data_frame['transaction_id'].values
-        chart = get_chart(chart_type, grouped_by_price_data_frame, labels=chart_labels)
+            sales_and_position_merged_data_frame = pd.merge(sales_data_frame, positions_data_frame, on='sales_id')
+            grouped_by_price_data_frame = sales_and_position_merged_data_frame.\
+                groupby('transaction_id', as_index=False)['price'].agg('sum')
+
+            sales_and_position_merged_data_frame_html_code = sales_and_position_merged_data_frame.to_html()
+            grouped_by_price_data_frame_html_code = grouped_by_price_data_frame.to_html()
+
+            chart_type = request.POST.get('chart_type')
+            chart_labels = grouped_by_price_data_frame['transaction_id'].values
+            chart = get_chart(chart_type, grouped_by_price_data_frame, labels=chart_labels)
 
     context = {
         'form': form,
