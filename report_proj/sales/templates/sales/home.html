@@ -31,6 +31,11 @@
         </div>
     </div>
 
+    {% if no_data %}
+        <div class="alert alert-warning" role="alert">
+            {{ no_data }}
+        </div>
+    {% endif %}
 
     <h1>Hello world</h1>
     <hr>
@@ -41,7 +46,7 @@
     </form>
     <br>
 
-    {% if sales_data_frame_html_code %}
+    {% if not no_data %}
         <p>Sales data frame: </p>
         {{ sales_data_frame_html_code|safe }}
         <br>

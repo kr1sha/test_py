@@ -19,6 +19,7 @@ def home_view(request):
     sales_and_position_merged_data_frame_html_code = None
     grouped_by_price_data_frame_html_code = None
     chart = None
+    no_data = None
 
     if request.method == 'POST':
 
@@ -43,10 +44,13 @@ def home_view(request):
             results_by = request.POST.get('results_by')
             print(results_by)
             chart = get_chart(chart_type, sales_data_frame, results_by)
+        else:
+            no_data = "No data is available in this data range"
 
     context = {
         'search_form': search_form,
         'report_form': report_form,
+        'no_data': no_data,
         'sales_data_frame_html_code': sales_data_frame_html_code,
         'positions_data_frame_html_code': positions_data_frame_html_code,
         'sales_and_position_merged_data_frame_html_code': sales_and_position_merged_data_frame_html_code,
