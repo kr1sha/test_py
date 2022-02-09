@@ -7,9 +7,12 @@ from .forms import SalesSearchForm
 from .modules import get_sales_data_frame, get_positions_data_frame
 from .utils import get_chart
 
+from reports.forms import ReportForm
+
 
 def home_view(request):
-    form = SalesSearchForm(request.POST or None)
+    search_form = SalesSearchForm(request.POST or None)
+    report_form = ReportForm
 
     sales_data_frame_html_code = None
     positions_data_frame_html_code = None
@@ -37,11 +40,13 @@ def home_view(request):
             grouped_by_price_data_frame_html_code = grouped_by_price_data_frame.to_html()
 
             chart_type = request.POST.get('chart_type')
-            chart_labels = grouped_by_price_data_frame['transaction_id'].values
-            chart = get_chart(chart_type, grouped_by_price_data_frame, labels=chart_labels)
+            results_by = request.POST.get('results_by')
+            print(results_by)
+            chart = get_chart(chart_type, sales_data_frame, results_by)
 
     context = {
-        'form': form,
+        'search_form': search_form,
+        'report_form': report_form,
         'sales_data_frame_html_code': sales_data_frame_html_code,
         'positions_data_frame_html_code': positions_data_frame_html_code,
         'sales_and_position_merged_data_frame_html_code': sales_and_position_merged_data_frame_html_code,

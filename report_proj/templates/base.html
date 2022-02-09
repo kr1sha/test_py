@@ -20,14 +20,14 @@
     <script src="{% static 'dropzone.js' %}" defer></script>{% endcomment %}
 
     <!-- Custom js & css -->
-    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
     {% block scripts %}
     {% endblock scripts %}
 
     <title>Report app | {% block title %}{% endblock title %}</title>
   </head>
   <body>
-    {% include 'inc/_navbar.html' %}
+    {% comment %}{% include 'inc/_navbar.html' %}{% endcomment %}
     <div class="container mt-3 mb-3">
         {% block content %}
         {% endblock content %}
