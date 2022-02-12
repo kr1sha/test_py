@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>PDF {{ report.name }}</title>
+  <style>
+    .image {
+      width: 100%;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>{{ report.name }}</h1>
+  <hr>
+  <img src="{{ report.image.path }}" class="image">
+  <br>
+  <h3>Remarks: </h3>
+  <p>{{ report.remark }}</p>
+  <hr>
+  <p>Author: <b>{{ report.author.user.username }}</b></p>
+  <p>Created: <b>{{ report.created }}</b></p>
+</body>
+</html>

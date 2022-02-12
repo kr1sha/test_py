@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    reports
+{% endblock title %}
+
+{% block content %}
+    <p>reports: </p>
+    {% for report in reports %}
+
+        <div class="card mb-3">
+            {% if report.image %}
+                <img src="{{ report.image.url }}" class="card-img-top" alt="{{ report.name }}">
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ report.name }}</h5>
+                <p class="card-text">{{ report.remark|truncatewords:2 }}</p>
+                <a href="{{ report.get_absolute_url }}" class="btn btn-primary">details</a>
+                <a href="{% url 'reports:pdf' report.pk %}" class="btn btn-danger">pdf</a>
+            </div>
+        </div>
+        <br>
+    {% endfor %}
+{% endblock content %}

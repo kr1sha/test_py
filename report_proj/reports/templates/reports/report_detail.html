@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ report.name }}
+{% endblock title %}
+
+{% block content %}
+    <h2>{{ report.name }}:</h2>
+    {% if report.image %}
+        <img src="{{ report.image.url }}" alt="{{ report.name }}" class="ing-fluid">
+        <br>
+    {% endif %}
+    <h3>Remark: </h3>
+    <p>{{ report.remark }}</p>
+    <hr>
+    <p>author: <b>{{ report.author.user.username }}</b></p>
+    <p>created: <b>{{ report.created }}</b></p>
+{% endblock content %}
