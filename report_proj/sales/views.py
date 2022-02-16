@@ -1,10 +1,11 @@
 import pandas as pd
+from django.http import HttpResponse
 from django.shortcuts import render
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, TemplateView
 
 from .models import Sale
 from .forms import SalesSearchForm
-from .modules import get_sales_data_frame, get_positions_data_frame
+from .modules import get_sales_data_frame, get_positions_data_frame, create_sale_from_csv
 from .utils import get_chart
 
 from reports.forms import ReportForm
@@ -70,4 +71,18 @@ class SaleDetailView(DetailView):
     model = Sale
     template_name = 'sales/detail.html'
     context_object_name = 'sale'
+
+
+class UploadTemplateView(TemplateView):
+    template_name = 'sales/from_file.html'
+
+
+def csv_upload_view(request):
+    if request.method == 'POST':
+        csv_file_name = request.FILES.get('file').name
+        csv_file = request.FILES.get('file')
+        create_sale_from_csv(csv_file, csv_file_name, request.user)
+
+
+    return HttpResponse()
 

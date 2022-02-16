@@ -1,6 +1,17 @@
 import pandas as pd
+import csv
 
-from .db_modules import get_salesman_name_from_salesman_id, get_customer_name_from_customer_id, get_sale_queryset_by_time_period
+from django.http import JsonResponse
+from django.utils.dateparse import parse_date
+
+from .db_modules import (
+    get_salesman_name_from_salesman_id,
+    get_customer_name_from_customer_id,
+    get_sale_queryset_by_time_period,
+    get_or_create_new_csv,
+    get_or_create_sale,
+    get_product, create_position,
+)
 
 
 def get_sales_data_frame(date_to, date_from):
@@ -81,3 +92,33 @@ def get_positions_data_from_sales(sales_queryset):
 
     return positions_data
 
+
+def create_sale_from_csv(csv_file, csv_file_name, user):
+    new_csv, created = get_or_create_new_csv(csv_file_name)
+
+    if created:
+        new_csv.csv_file = csv_file
+        new_csv.save()
+        with open(new_csv.csv_file.path, 'r') as path:
+            reader = csv.reader(path)
+            reader.__next__()
+            for row in reader:
+                data = "".join(row).split(';')
+                data.pop()
+
+                transaction_id = data[1]
+                product_name = data[2]
+                quantity = int(data[3])
+                customer_name = data[4]
+                date = parse_date(data[5])
+
+                product = get_product(product_name)
+
+                if product is not None:
+                    position = create_position(product, quantity, date)
+                    sale, _ = get_or_create_sale(transaction_id, customer_name, date, user)
+                    sale.positions.add(position)
+                    sale.save()
+        return JsonResponse({'was_existing': False})
+    else:
+        return JsonResponse({'was_existing': True})
