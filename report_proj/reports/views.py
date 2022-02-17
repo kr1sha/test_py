@@ -5,6 +5,8 @@ from django.conf import settings
 from django.http import HttpResponse
 from django.template.loader import get_template
 from xhtml2pdf import pisa
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from profiles.models import Profile
 
@@ -12,18 +14,19 @@ from .utils import is_ajax, get_report_image
 from .models import Report
 
 
-class ReportListView(ListView):
+class ReportListView(LoginRequiredMixin, ListView):
     model = Report
     template_name = 'reports/report_list.html'
     context_object_name = 'reports'
 
 
-class ReportDetailView(DetailView):
+class ReportDetailView(LoginRequiredMixin, DetailView):
     model = Report
     template_name = 'reports/report_detail.html'
     context_object_name = 'report'
 
 
+@login_required
 def create_report_view(request):
     if is_ajax(request):
         name = request.POST.get('name')
@@ -39,6 +42,7 @@ def create_report_view(request):
     return JsonResponse({})
 
 
+@login_required
 def render_pdf_view(request, pk):
     template_path = 'reports/pdf.html'
     report = get_object_or_404(Report, pk=pk)

@@ -2,6 +2,8 @@ import pandas as pd
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.generic import ListView, DetailView, TemplateView
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import Sale
 from .forms import SalesSearchForm
@@ -11,6 +13,7 @@ from .utils import get_chart
 from reports.forms import ReportForm
 
 
+@login_required
 def home_view(request):
     search_form = SalesSearchForm(request.POST or None)
     report_form = ReportForm
@@ -61,28 +64,28 @@ def home_view(request):
     return render(request, 'sales/home.html', context=context)
 
 
-class SaleListView(ListView):
+class SaleListView(LoginRequiredMixin, ListView):
     model = Sale
     template_name = 'sales/main.html'
     context_object_name = 'sales'
 
 
-class SaleDetailView(DetailView):
+class SaleDetailView(LoginRequiredMixin, DetailView):
     model = Sale
     template_name = 'sales/detail.html'
     context_object_name = 'sale'
 
 
-class UploadTemplateView(TemplateView):
+class UploadTemplateView(LoginRequiredMixin, TemplateView):
     template_name = 'sales/from_file.html'
 
 
+@login_required
 def csv_upload_view(request):
     if request.method == 'POST':
         csv_file_name = request.FILES.get('file').name
         csv_file = request.FILES.get('file')
         create_sale_from_csv(csv_file, csv_file_name, request.user)
-
 
     return HttpResponse()
 
