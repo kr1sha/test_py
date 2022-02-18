@@ -26,6 +26,10 @@ class Position(models.Model):
         sale_object = self.sale_set.first()
         return sale_object.id
 
+    def get_sales_customer(self):
+        sale_object = self.sale_set.first()
+        return sale_object.customer.name
+
     def __str__(self):
         return f"id: {self.pk}, product: {self.product.name}, quantity: {self.quantity}"
 
