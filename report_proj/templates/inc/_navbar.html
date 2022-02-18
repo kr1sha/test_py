@@ -1,10 +1,41 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% load static %}
 
-</body>
-</html>
+{% url 'sales:home' as path_to_home %}
+{% url 'sales:list' as path_to_sales %}
+{% url 'sales:from-file' as path_to_from_file %}
+{% url 'reports:list' as path_to_reports %}
+{% url 'profiles:main' as path_to_profiles %}
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{% url 'sales:home' %}"><img src="{% static 'img/logo.png' %}" class="logo-sm"></a>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link {% if request.path == path_to_home %}active{% endif %} " href="{% url 'sales:home' %}">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.path == path_to_sales %}active{% endif %}" href="{% url 'sales:list' %}">Sales</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.path == path_to_from_file %}active{% endif %}" href="{% url 'sales:from-file' %}">Add from file</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.path == path_to_reports %}active{% endif %}" href="{% url 'reports:list' %}">Reports</a>
+        </li>
+      </ul>
+    </div>
+    {% if request.user.is_authenticated %}
+      <div class="nav-item dropdown">
+        <div class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <img src="{{ request.user.profile.avatar.url }}" class="avatar-small">&nbsp;{{request.user}}
+        </div>
+        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+          <li><a class="dropdown-item {% if request.path == path_to_profiles %}active{% endif %}" href="{% url 'profiles:main' %}">Profile</a></li>
+          <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+        </ul>
+      </div>
+    {% endif %}
+  </div>
+</nav>
